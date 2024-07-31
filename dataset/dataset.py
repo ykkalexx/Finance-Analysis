@@ -49,13 +49,16 @@ def generate_fake_data(year, month, transaction_id=None):
 now = datetime.now()
 year, month = now.year, now.month
 
+# Generate customer no.
+customer_no = fake.random_number(digits=6)
+
 # Generate 950 unique transactions and 50 duplicates
 transactions = [generate_fake_data(year, month) for _ in range(950)]
 duplicates = [generate_fake_data(year, month, transaction['transaction_id']) for transaction in random.choices(transactions, k=50)]
 transactions.extend(duplicates)
 
 # Write the transactions to a CSV file
-with open(f'{year}_{month}_transactions.csv', 'w', newline='') as csvfile:
+with open(f'{customer_no}_{year}_{month}_transactions.csv', 'w', newline='') as csvfile:
     fieldnames = ['transaction_id', 'user_id', 'transaction_amount', 'transaction_time', 'transaction_type']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
@@ -73,5 +76,5 @@ bucket_name=os.getenv('AWS_BUCKET_NAME')
 
 # Upload the CSV file to an S3 bucket
 s3 = session.client('s3')
-with open(f'{year}_{month}_transactions.csv', 'rb') as data:
-    s3.upload_fileobj(data, bucket_name, f'{year}_{month}_transactions.csv')
+with open(f'{customer_no}_{year}_{month}_transactions.csv', 'rb') as data:
+    s3.upload_fileobj(data, bucket_name, f'{customer_no}_{year}_{month}_transactions.csv')
