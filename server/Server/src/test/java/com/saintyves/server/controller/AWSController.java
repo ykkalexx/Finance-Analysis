@@ -4,7 +4,10 @@ import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.lambda.AWSLambdaClientBuilder;
 import com.amazonaws.services.lambda.model.InvokeRequest;
 import com.amazonaws.services.lambda.model.InvokeResult;
+import com.saintyves.server.repo.MonthlySumRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.nio.charset.StandardCharsets;
@@ -12,10 +15,11 @@ import java.nio.charset.StandardCharsets;
 @RestController
 public class AWSController {
 
-
+    @Autowired
+    MonthlySumRepo monthlySumRepo;
     private final AWSLambda awsLambda = AWSLambdaClientBuilder.defaultClient();
 
-    @GetMapping("/monthly-sum")
+    @PostMapping("/monthly-sum")
     public String triggerMonthlySumLambda() {
         InvokeRequest request = new InvokeRequest().withFunctionName("monthly-sum").withPayload("{}");
         InvokeResult result = awsLambda.invoke(request);
@@ -25,17 +29,17 @@ public class AWSController {
         return response;
     }
 
-    @GetMapping("/analyze")
+    @PostMapping("/analyze")
     public String triggerAnalyzeLambda() {
         return null;
     }
 
-    @GetMapping("/process")
+    @PostMapping("/process")
     public String triggerProcessLambda() {
         return null;
     }
 
-    @GetMapping("/validate")
+    @PostMapping("/validate")
     public String triggerValidateLambda() {
         return null;
     }
