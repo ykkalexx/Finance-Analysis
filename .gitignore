@@ -1,3 +1,4 @@
 dataset/.env
 .DS_Store
 Lambdas/MonthlySum_lambda/upload
+server/.env
