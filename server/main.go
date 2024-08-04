@@ -17,8 +17,6 @@ func main() {
 	fmt.Println("Starting server");
 	app := fiber.New()
 	
-	routes.ApiRoutes(app);
-
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -36,6 +34,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	routes.ApiRoutes(app, client);
 
 	fmt.Println("Connected to MongoDB!")
 	log.Fatal(app.Listen(":3000"));
