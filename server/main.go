@@ -36,6 +36,7 @@ func main() {
 	}
 
 	routes.ApiRoutes(app, client);
+	routes.HealthCheck(app, client);
 
 	fmt.Println("Connected to MongoDB!")
 	log.Fatal(app.Listen(":3000"));

@@ -3,3 +3,4 @@ dataset/.env
 Lambdas/MonthlySum_lambda/upload
 server/.env
 Notes.md
+Lambdas/.env
