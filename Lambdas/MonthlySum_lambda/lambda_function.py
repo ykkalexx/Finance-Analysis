@@ -9,10 +9,8 @@ s3 = boto3.client('s3')
 def lambda_handler(event, context):
     bucket_name = "frauddetectorfileholder"
     
-    # List all files in the bucket
     files = s3.list_objects(Bucket=bucket_name)['Contents']
 
-    # Filter the files based on the name format
     pattern = re.compile(r'\d{6}_\d{4}_\d+_transactions.csv')
     files = [file['Key'] for file in files if pattern.match(file['Key'])]
 
