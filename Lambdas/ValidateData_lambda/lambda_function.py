@@ -25,17 +25,17 @@ def lambda_handler(event, context):
         duplicates = df[df.duplicated(subset='transaction_id')]
         duplicates_msg = ''
         if not duplicates.empty:
-            duplicates_msg = (f"Found {len(duplicates)} duplicate rows in file {file_name}, transaction ids: {duplicates['transaction_id'].tolist()}")
+            duplicates_msg = (f"Found {len(duplicates)} duplicate rows in file {file_name}")
 
         missing = df[df.isnull().any(axis=1)]
         missing_msg = ''
         if not missing.empty:
-            missing_msg = (f"Found {len(missing)} missing entries in file {file_name}, transaction ids: {missing['transaction_id'].tolist()}")
+            missing_msg = (f"Found {len(missing)} missing entries in file {file_name}")
 
         unusual = df[(df['transaction_amount'] < 0) | (df['transaction_amount'] > 10000) | (df['transaction_amount'].between(1000, 10000))]
         unusual_msg = ''
         if not unusual.empty:
-            unusual_msg = (f"Found {len(unusual)} unusual amounts in file {file_name}, transaction ids: {unusual['transaction_id'].tolist()}")
+            unusual_msg = (f"Found {len(unusual)} unusual amounts in file {file_name}")
 
         result = {
             'duplicates': {

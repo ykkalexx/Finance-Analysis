@@ -91,3 +91,50 @@ export const commonTransactionController = async (
     res.status(500).json({ error: errorMessage });
   }
 };
+
+export const analyzeDataController = async (req: Request, res: Response) => {
+  const params = {
+    FunctionName: "analyze_data",
+    InvocationType: "RequestResponse",
+  };
+
+  try {
+    const lambdaResponse = await lambda.invoke(params).promise();
+
+    const data = JSON.parse(lambdaResponse.Payload as string);
+
+    const { customer_number, duplicates, missing, unusual } = data;
+
+    const result = {
+      customer_number,
+      duplicates: { count: duplicates.count, message: duplicates.message },
+      missing: { count: missing.count, message: missing.message },
+      unusual: { count: unusual.count, message: unusual.message },
+    };
+
+    const customerNumberInt = parseInt(customer_number, 10);
+
+    db.query(
+      "INSERT INTO analyzed_data (customer_number, duplicates, missing, unusual) VALUES (?, ?, ?, ?)",
+      [customerNumberInt, duplicates.count, missing.count, unusual.count],
+      (err, results) => {
+        if (err) {
+          console.error("Failed to insert data into the database:", err);
+          res
+            .status(500)
+            .json({ error: "Failed to insert data into the database" });
+          return;
+        }
+
+        console.log("Data inserted into the database:", results);
+        res.status(200).json({ message: "Success", data: data });
+      }
+    );
+
+    // todo setup node mailer to send message to customer
+  } catch (error) {
+    console.log(error);
+    const errorMessage = { message: error.message, stack: error.stack };
+    res.status(500).json({ error: errorMessage });
+  }
+};
