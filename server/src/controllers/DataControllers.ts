@@ -5,9 +5,12 @@ import db from "../database/db";
 const lambda = new AWS.Lambda();
 
 export const monthlySumController = async (req: Request, res: Response) => {
+  const customerNumber = req.body.customerNumber;
+
   const params = {
     FunctionName: "monthly-sum",
     InvocationType: "RequestResponse",
+    Payload: JSON.stringify({ customer_number: customerNumber }),
   };
 
   try {
@@ -27,6 +30,12 @@ export const monthlySumController = async (req: Request, res: Response) => {
 
     const monthlySumInt = parseInt(monthly_sum, 10);
     const customerNumberInt = parseInt(customer_number, 10);
+
+    if (isNaN(customerNumberInt)) {
+      console.error("Invalid customer number:", customer_number);
+      res.status(400).json({ error: "Invalid customer number" });
+      return;
+    }
 
     db.query(
       "INSERT INTO monthly_summaries (customer_number, amount_spend) VALUES (?, ?)",
@@ -55,9 +64,12 @@ export const commonTransactionController = async (
   req: Request,
   res: Response
 ) => {
+  const customerNumber = req.body.customerNumber;
+
   const params = {
     FunctionName: "common_transaction",
     InvocationType: "RequestResponse",
+    Payload: JSON.stringify({ customer_number: customerNumber }),
   };
 
   try {
@@ -93,9 +105,12 @@ export const commonTransactionController = async (
 };
 
 export const analyzeDataController = async (req: Request, res: Response) => {
+  const customerNumber = req.body.customerNumber;
+
   const params = {
     FunctionName: "analyze_data",
     InvocationType: "RequestResponse",
+    Payload: JSON.stringify({ customer_number: customerNumber }),
   };
 
   try {
