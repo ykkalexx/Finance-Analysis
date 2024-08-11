@@ -24,9 +24,8 @@ export const createNewUser = async (req: Request, res: Response) => {
 
         console.log("Data inserted into the database:", results);
 
-        // Invoke the Lambda function
         const params = {
-          FunctionName: "your_lambda_function_name",
+          FunctionName: "create_customer",
           InvocationType: "RequestResponse",
           Payload: JSON.stringify({ customer_number }),
         };
@@ -49,4 +48,7 @@ export const createNewUser = async (req: Request, res: Response) => {
   }
 };
 
-export const fetchAllUserData = async (req: Request, res: Response) => {};
+export const fetchAllUserDataByCustomerNo = async (
+  req: Request,
+  res: Response
+) => {};

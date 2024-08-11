@@ -1,12 +1,10 @@
-import os
 import csv
 import random
 import boto3
 from faker import Faker
 from datetime import datetime, timedelta
-from dotenv import load_dotenv
+import io
 
-load_dotenv() 
 fake = Faker()
 
 transactions_type = ["transport","entertainment","services","travel","health"]
@@ -59,18 +57,19 @@ def lambda_handler(event, context):
     transactions.extend(duplicates)
 
     # Write the transactions to a CSV file
-    with open(f'{customer_no}_{year}_{month}_transactions.csv', 'w', newline='') as csvfile:
-        fieldnames = ['transaction_id', 'user_id', 'transaction_amount', 'transaction_time', 'transaction_type']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    csv_file = io.StringIO()
+    fieldnames = ['transaction_id', 'user_id', 'transaction_amount', 'transaction_time', 'transaction_type']
+    writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
 
-        writer.writeheader()
-        for transaction in transactions:
-            writer.writerow(transaction)
+    writer.writeheader()
+    for transaction in transactions:
+        writer.writerow(transaction)
+
+    bucket_name = "frauddetectorfileholder"
 
     # Upload the CSV file to an S3 bucket
     s3 = boto3.client('s3')
-    with open(f'{customer_no}_{year}_{month}_transactions.csv', 'rb') as data:
-        s3.upload_fileobj(data, os.getenv('AWS_BUCKET_NAME'), f'{customer_no}_{year}_{month}_transactions.csv')
+    s3.put_object(Body=csv_file.getvalue(), Bucket=bucket_name, Key=f'{customer_no}_{year}_{month}_transactions.csv')
 
     return {
         'statusCode': 200,
