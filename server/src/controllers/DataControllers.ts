@@ -145,8 +145,6 @@ export const analyzeDataController = async (req: Request, res: Response) => {
         res.status(200).json({ message: "Success", data: data });
       }
     );
-
-    // todo setup node mailer to send message to customer
   } catch (error) {
     console.log(error);
     const errorMessage = { message: error.message, stack: error.stack };
