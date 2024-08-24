@@ -9,7 +9,17 @@ import {
 jest.mock("../aws/aws", () => ({
   Lambda: jest.fn().mockImplementation(() => ({
     invoke: jest.fn().mockImplementation(() => ({
-      promise: jest.fn(),
+      promise: jest.fn().mockResolvedValue({
+        Payload: JSON.stringify({
+          data: [
+            {
+              monthly_sum: 0,
+              common_transaction_type: "",
+              count: 0,
+            },
+          ],
+        }),
+      }),
     })),
   })),
 }));
