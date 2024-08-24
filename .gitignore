@@ -3,5 +3,6 @@ dataset/.env
 Lambdas/MonthlySum_lambda/upload
 server/.env
 Notes.md
-Lambdas/.env
 server/node_modules
+Lambdas/.env
+
